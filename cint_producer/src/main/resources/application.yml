@@ -1,0 +1,11 @@
+spring:
+  config:
+    import:
+      - kafka.yml
+      - gauss.yml
+  application:
+    name: cint_producer
+
+cint:
+  producer:
+    fixed-rate: ${CINT_PRODUCER_FIXED_RATE:1000}

@@ -1,0 +1,12 @@
+spring:
+  config:
+    import: kafka.yml
+  application:
+    name: cint_consumer
+
+
+cint:
+  anomaly:
+    threshold: ${CINT_ANOMALY_THRESHOLD:3}
+  window:
+    size: ${CINT_WINDOW_SIZE:100}

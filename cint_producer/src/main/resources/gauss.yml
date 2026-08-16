@@ -1,0 +1,5 @@
+gauss:
+  mean: ${GAUSS_MEAN:100}
+  stdDev: ${GAUSS_STD_DEV:15}
+  anomalyChance: ${GAUSS_ANOMALY_CHANCE:0.05}
+  anomalyMean: ${GAUSS_ANOMALY_MEAN:200}

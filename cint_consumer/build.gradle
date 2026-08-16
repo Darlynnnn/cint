@@ -1,0 +1,87 @@
+plugins {
+    id 'java'
+    id 'idea'
+    id 'org.springframework.boot' version '4.1.0'
+    id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'org.example'
+version = '0.0.1-SNAPSHOT'
+description = 'cint_consumer'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
+}
+
+sourceSets {
+    integrationTest {
+        compileClasspath += sourceSets.main.output + sourceSets.test.output
+        runtimeClasspath += sourceSets.main.output + sourceSets.test.output
+    }
+}
+
+idea {
+    module {
+        testSources.from(sourceSets.integrationTest.java.srcDirs)
+        testResources.from(sourceSets.integrationTest.resources.srcDirs)
+    }
+}
+
+configurations  {
+    integrationTestImplementation.extendsFrom testImplementation
+    integrationTestRuntimeOnly.extendsFrom testRuntimeOnly
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+jar {
+    enabled = false
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.testcontainers:testcontainers-bom:2.0.5"
+    }
+}
+
+dependencies {
+    implementation 'org.example:cint_common:0.0.1-SNAPSHOT'
+    implementation 'org.springframework.boot:spring-boot-starter-kafka'
+    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.kafka:spring-kafka-test'
+
+    integrationTestImplementation 'org.testcontainers:testcontainers-junit-jupiter'
+    integrationTestImplementation 'org.testcontainers:testcontainers-kafka'
+    integrationTestImplementation 'org.springframework.boot:spring-boot-testcontainers'
+    integrationTestImplementation 'org.awaitility:awaitility'
+
+    // lombok
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testCompileOnly 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+tasks.register('integrationTest', Test) {
+    description = 'Runs the integration tests.'
+    group = 'verification'
+    testClassesDirs = sourceSets.integrationTest.output.classesDirs
+    classpath = sourceSets.integrationTest.runtimeClasspath
+    shouldRunAfter(tasks.test)
+    useJUnitPlatform()
+}
